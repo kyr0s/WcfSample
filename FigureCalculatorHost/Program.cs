@@ -3,6 +3,7 @@ using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using Calculator.Client;
+using FigureCalculator.Host.Container;
 using FigureCalculator.Service;
 
 namespace FigureCalculator.Host
@@ -11,14 +12,16 @@ namespace FigureCalculator.Host
     {
         public static void Main(string[] args)
         {
-            var calculatorClient = new CalculatorClient();
-            var figureCalculator = new Service.FigureCalculator(calculatorClient);
             var baseAddress = new Uri("http://localhost:5001/");
-            var selfHost = new ServiceHost(figureCalculator, baseAddress);
+            var selfHost = new ServiceHost(typeof(Service.FigureCalculator), baseAddress);
 
             try
             {
                 selfHost.AddServiceEndpoint(typeof(IFigureCalculator), new WSHttpBinding(SecurityMode.None), "FigureCalculator");
+
+                var container = DependencyInjectionContainerFactory.CreateNinjectContainer(new MainModule());
+                var diBehavior = new DependencyInjectionBehavior(container);
+                selfHost.Description.Behaviors.Add(diBehavior);
 
                 var serviceMetadataBehavior = new ServiceMetadataBehavior { HttpGetEnabled = true };
                 selfHost.Description.Behaviors.Add(serviceMetadataBehavior);

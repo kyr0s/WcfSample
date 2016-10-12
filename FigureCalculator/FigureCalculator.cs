@@ -1,10 +1,8 @@
 ﻿using System;
-using System.ServiceModel;
 using Calculator.Client;
 
 namespace FigureCalculator.Service
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class FigureCalculator : IFigureCalculator
     {
         private readonly ICalculatorClient calculatorClient;
