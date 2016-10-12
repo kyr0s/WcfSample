@@ -1,0 +1,1 @@
+powershell -ExecutionPolicy UnRestricted -File "%CD%\startAll.ps1"
